@@ -1,5 +1,7 @@
 from django.shortcuts import render
+from django.views.generic import View
 
+class HomePage(View):
 
-class HomePage():
-    pass
+    def get(self, request):
+        return render(request, 'urlyapp/index.html')

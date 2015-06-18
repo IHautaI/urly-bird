@@ -3,17 +3,20 @@ import unittest
 
 
 class VisitorTest(unittest.TestCase):
+
     def setUp(self):
         self.browser = webdriver.Firefox()
         self.browser.implicitly_wait(3)
+
     def tearDown(self):
         self.browser.quit()
 
-    def test_user_can_open_site():
+    def test_user_can_open_site(self):
         # user opens the site
-        browser.get('http://localhost:8000')
-        # they see a website with title 'urly-bird'
-        self.assertIn('urly-bird', self.browser.title)
+        self.browser.get('http://localhost:8000')
+        # they see a website with urly-bird' in the title
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('Urly-Bird', header_text)
 
 # they see a place to log in, a place to register,
 # and some general information about trending links
