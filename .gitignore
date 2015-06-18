@@ -1,5 +1,7 @@
 # Created by https://www.gitignore.io
-
+.envrc
+.direnv
+.DS_Store
 ### Django ###
 *.log
 *.pot
