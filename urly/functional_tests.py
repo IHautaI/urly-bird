@@ -14,18 +14,25 @@ class VisitorTest(unittest.TestCase):
     def test_user_can_open_site_and_navigate(self):
         # user opens the site
         self.browser.get('http://localhost:8000')
+
         # they see a website with urly-bird' in the title
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('Urly-Bird', header_text)
+
         # they see a place to log in, a place to register
         # and some general information about trending links
         login = self.browser.find_element_by_id('login_link')
         registration = self.browser.find_element_by_id('registration_link')
         trending = self.browser.find_element_by_id('trending')
 
-# the user clicks a link info button to see more information
-# they get a page where the see the link, the user
-# that created the link, link stats and tags for that link
+        # the user clicks a link info button to see more information
+        self.browser.find_element_by_class_name('bookmark').click()
+
+        # they get a page where the see the link, the user
+        # that created the link, link stats and tags for that link
+        self.browser.find_element_by_id('username')
+
+
 
 # the user clicks a tag, and sees a page with links tagged
 # with that tag ranked by recent clicks.

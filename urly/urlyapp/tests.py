@@ -7,7 +7,6 @@ from urlyapp.views import HomePage
 
 
 class HomePageTest(TestCase):
-
     # def test_root_url_resolves_to_home_page_view(self):
     #     found = resolve('/')
     #     self.assertTrue(found.func, HomePage.as_view) won't work, class based now
