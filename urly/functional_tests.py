@@ -11,15 +11,17 @@ class VisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def test_user_can_open_site(self):
+    def test_user_can_open_site_and_navigate(self):
         # user opens the site
         self.browser.get('http://localhost:8000')
         # they see a website with urly-bird' in the title
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('Urly-Bird', header_text)
-
-# they see a place to log in, a place to register,
-# and some general information about trending links
+        # they see a place to log in, a place to register
+        # and some general information about trending links
+        login = self.browser.find_element_by_id('login_link')
+        registration = self.browser.find_element_by_id('registration_link')
+        trending = self.browser.find_element_by_id('trending')
 
 # the user clicks a link info button to see more information
 # they get a page where the see the link, the user
