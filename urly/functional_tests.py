@@ -56,9 +56,13 @@ class VisitorTest(unittest.TestCase):
         tag.click()
         self.assertEqual(tag_text, self.browser.find_element_by_tag_name('h1').text)
 
-        # the user backtracks to the main page and logs in
-        #self.browser.find_element_by_id('home').click()
-        #self.browser.find_element_by_id('login').click()
+        # the user backtracks to the main page and decides to log in
+        self.browser.find_element_by_id('home').click()
+        self.browser.find_element_by_id('login').click()
+
+        # they are prompted to enter a username and password, or register for an account
+        un = self.browser.find_element_by_id('username')
+        pw = self.browser.find_element_by_id('password')
 
 # they see their own page, similar to the user page before
 # but with options to create new links, delete links, and

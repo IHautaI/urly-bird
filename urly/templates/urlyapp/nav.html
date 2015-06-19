@@ -5,31 +5,35 @@
 
 {% load staticfiles %}
 
-<html>
+<html lang="en">
+<head>
+  <link rel='stylesheet' href = '{% static "style.css" %}'/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Urly-Bird</title>
+</head>
 {% block content %}
 
 {% endblock %}
 
 <div class='navbar navbar-inverse navbar-fixed-top'>
   <div class='container'>
-    <div class='nav navbar-nav'>
 
-      <ul>
-        <li><a href='{% url 'urlyapp:home' %}' id='home'>Home</a></li>
-        <li><a href='' id='profiles'>Profiles</a></li>
-        <li><a href='' id='bookmarks'>Trending Bookmarks</a></li>
-        <li><a href='' id='tags'>Tags</a></li>
+    <ul class='nav navbar-nav'>
 
-        {% if user.is_authenticated %}
-        <li><a href='' id='profile'>Your Profile</a></li>
-        <li><a href='' id='logout'>Logout</a></li>
-        {% else %}
-        <li><a href='' id='login'>Log In</a></li>
-        {% endif %}
+      <li><a href='{% url 'urlyapp:home' %}' id='home'>Home</a></li>
+      <li><a href='' id='profiles'>Profiles</a></li>
+      <li><a href='' id='bookmarks'>Trending Bookmarks</a></li>
+      <li><a href='' id='tags'>Tags</a></li>
 
-      </ul>
+      {% if user.is_authenticated %}
+      <li><a href='' id='profile'>Your Profile</a></li>
+      <li><a href='' id='logout'>Logout</a></li>
+      {% else %}
+      <li><a href='{% url 'accounts:login' %}' id='login'>Log In</a></li>
+      {% endif %}
 
-    </div>
+    </ul>
+
   </div>
 </div>
 
