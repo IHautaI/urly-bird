@@ -3,8 +3,8 @@ from django.test import TestCase
 from django.template.loader import render_to_string
 from django.http import HttpRequest
 
-from urlyapp.views import HomePageView, BookmarkView, ProfileView
-from urlyapp.models import Bookmark, Profile
+from urlyapp.views import HomePageView, BookmarkView, ProfileView, TagView
+from urlyapp.models import Bookmark, Profile, Tag
 
 class HomePageTest(TestCase):
 
@@ -19,15 +19,23 @@ class BookmarkPageTest(TestCase):
 
     def test_bookmark_resolves_to_bookmark_view(self):
         inp = {
+            'username': 'Francis',
+            'description': 'hheeeeeeeellooooooo',
+        }
+        profile = Profile.objects.create(**inp)
+
+        inp = {
             'title': 'test title',
             'url': 'http://test.url',
-            'description': 'test description'
+            'description': 'test description',
+            'profile': profile
         }
-        Bookmark.objects.create(**inp)
+        bm = Bookmark.objects.create(**inp)
         request = HttpRequest()
-        response = BookmarkView().get(request, 1)
+        response = BookmarkView().get(request, pk=bm.pk)
         expected = render_to_string('urlyapp/bookmark.html', \
-                                    {'bookmark':Bookmark.objects.get(pk=1)})
+                                    {'bookmark': bm,
+                                     'profile': profile})
 
         self.assertEqual(expected, response.content.decode())
 
@@ -97,21 +105,22 @@ class ProfileTest(TestCase):
 
 
 class ProfileViewTest(TestCase):
+
     def test_profile_resolves_to_profile_view(self):
         inp = {
             'username': 'Francis',
             'description': 'hheeeeeeeellooooooo',
         }
-        Profile.objects.create(**inp)
+        pf = Profile.objects.create(**inp)
         request = HttpRequest()
-        response = ProfileView().get(request, 1)
-        expected = render_to_string('urlyapp/bookmark.html', \
-                                    {'profile':Profile.objects.first()})
+        response = ProfileView().get(request, pk=pf.pk)
+        expected = render_to_string('urlyapp/profile.html', \
+                                    {'profile':pf})
 
         self.assertEqual(expected, response.content.decode())
 
 
-    def test_profile_view_has_bookmark(self):
+    def test_profile_view_has_items(self):
         inp = {
             'username': 'Francis',
             'description': 'hheeeeeeeellooooooo',
@@ -123,9 +132,84 @@ class ProfileViewTest(TestCase):
             'url': 'http://test.url',
             'description': 'test description',
             'profile': profile,
+
         }
         bm = Bookmark.objects.create(**inp)
         request = HttpRequest()
-        response = ProfileView.get(pk=profile.pk)
+        response = ProfileView().get(request, pk=profile.pk)
 
         self.assertIn(bm.title, response.content.decode())
+
+class TagTest(TestCase):
+    def test_create_tag(self):
+        tag = Tag.objects.create(name='bad')
+
+        self.assertEqual(tag, Tag.objects.get(name='bad'))
+
+    def test_add_bookmark_to_tag(self):
+        inpp = {
+            'username': 'Francis',
+            'description': 'hheeeeeeeellooooooo',
+        }
+        profile = Profile.objects.create(**inpp)
+
+        inpb = {
+            'title': 'test title',
+            'url': 'http://test.url',
+            'description': 'test description',
+            'profile': profile,
+        }
+        bm = Bookmark.objects.create(**inpb)
+
+        inp = {
+        'name':'terrible',
+        }
+        tag = Tag.objects.create(**inp)
+        tag.bookmarks.add(bm)
+
+        self.assertEqual(tag.name, 'terrible')
+        self.assertEqual(list(tag.bookmarks.all()), [bm])
+
+
+class TagViewTest(TestCase):
+    def test_tag_resolves_to_tag_view(self):
+        inp = {
+            'name':'terrible',
+        }
+        tag = Tag.objects.create(**inp)
+        request = HttpRequest()
+        response = TagView().get(request, pk=tag.pk)
+        expected = render_to_string('urlyapp/tag.html', \
+                                    {'tag':tag})
+
+        self.assertEqual(expected, response.content.decode())
+
+    def test_tag_view_has_items(self):
+        inp1 = {
+            'username': 'Francis',
+            'description': 'hheeeeeeeellooooooo',
+        }
+        profile = Profile.objects.create(**inp1)
+
+        inp2 = {
+            'title': 'test title',
+            'url': 'http://test.url',
+            'description': 'test description',
+            'profile': profile,
+
+        }
+        bm = Bookmark.objects.create(**inp2)
+
+        inp = {
+            'name': 'terrible',
+        }
+        tag = Tag.objects.create(**inp)
+        tag.bookmarks.add(bm)
+
+        request = HttpRequest()
+        response = TagView().get(request, pk=tag.pk)
+        expected = render_to_string('urlyapp/tag.html', {'tag':tag,})
+
+        self.assertIn(tag.name, expected)
+        self.assertIn(bm.title, expected)
+        self.assertIn(profile.username, expected)

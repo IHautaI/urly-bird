@@ -13,7 +13,7 @@
   <div id='trending'>
     Trending links:
     {% for bookmark in bookmarks %}
-    <a href='{% url 'urly:bookmark' pk=bookmark.pk %}' class='bookmark' id='{{bookmark.title}}'>{{bookmark.title}}</a>
+    <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}' class='bookmark' id='{{bookmark.title}}'>{{bookmark.title}}</a>
     {% endfor %}
   </div>
 </body>

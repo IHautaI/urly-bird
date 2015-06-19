@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, DetailView
 
-from urlyapp.models import Bookmark, Profile
+from urlyapp.models import Bookmark, Profile, Tag
 
 
 class HomePageView(TemplateView):
@@ -10,7 +10,7 @@ class HomePageView(TemplateView):
         context = self.get_context_data()
         context['bookmarks'] = list(Bookmark.objects.all())
         return render(request, 'urlyapp/index.html', context)
-        # add context variable giving bookmarks to show
+
 
 class BookmarkView(TemplateView):
 
@@ -23,10 +23,25 @@ class BookmarkView(TemplateView):
 
         return render(request, 'urlyapp/bookmark.html', context)
 
+
 class ProfileView(TemplateView):
 
     def get(self, request, pk):
         context = self.get_context_data()
-        profile = get_object_or_404(pk=pk)
+        profile = get_object_or_404(Profile, pk=pk)
         context['profile'] = profile
-        return render(response, 'urlyapp/profile.html', context)
+        context['bookmarks'] = list(profile.bookmark_set.all())
+        return render(request, 'urlyapp/profile.html', context)
+
+
+class TagView(TemplateView):
+
+    def get(self, request, pk):
+        context = super().get_context_data()
+
+        tag = get_object_or_404(Tag, pk=pk)
+        bookmarks = list(Bookmark.objects.select_related('profile'))
+        context['tag'] = tag
+        context['bookmarks'] = bookmarks
+
+        return render(request, 'urlyapp/tag.html', context)

@@ -9,4 +9,5 @@ urlpatterns = [
         name='bookmark'),
     url(r'^profile/(?P<pk>[0-9]+)$', views.ProfileView.as_view(), \
         name='profile'),
+    url(r'^tag/(?P<pk>[0-9]+)$', views.TagView.as_view(), name='tag'),
 ]
