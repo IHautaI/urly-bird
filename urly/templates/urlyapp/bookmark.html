@@ -6,6 +6,14 @@
 </head>
 
 <body>
-<h1>{{bookmark.title}}</h1>
+  <h1>{{bookmark.title}}</h1>
+
+  Absolute Url: <div id='url'>{{bookmark.url}}</div>
+
+  <div>
+    Url added by: <a href='{% url 'urly:profile' profile.pk %}'
+                     class='profile'>{{profile.username}}</a>
+  </div>
+
 </body>
 </html>
