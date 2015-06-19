@@ -54,9 +54,12 @@ class VisitorTest(unittest.TestCase):
         tag = self.browser.find_element_by_class_name('tag')
         tag_text = tag.text
         tag.click()
-
         self.assertEqual(tag_text, self.browser.find_element_by_tag_name('h1').text)
-# the user backtracks to the main page and logs in
+
+        # the user backtracks to the main page and logs in
+        #self.browser.find_element_by_id('home').click()
+        #self.browser.find_element_by_id('login').click()
+
 # they see their own page, similar to the user page before
 # but with options to create new links, delete links, and
 # edit the tags on a link.

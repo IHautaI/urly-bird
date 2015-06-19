@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 
-<html>
+
+{% extends 'urlyapp/nav.html' %}
+
+{% block content %}
+
 <head>
 <title>Bookmark</title>
 </head>
@@ -15,5 +19,4 @@
                      class='profile'>{{ profile.username }}</a>
   </div>
 
-</body>
-</html>
+{% endblock %}

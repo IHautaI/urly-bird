@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% load staticfiles %}
+
+<html>
+{% block content %}
+
+{% endblock %}
+
+<div class='navbar navbar-inverse navbar-fixed-top'>
+  <div class='container'>
+    <div class='nav navbar-nav'>
+
+      <ul>
+        <li><a href='{% url 'urlyapp:home' %}' id='home'>Home</a></li>
+        <li><a href='' id='profiles'>Profiles</a></li>
+        <li><a href='' id='bookmarks'>Trending Bookmarks</a></li>
+        <li><a href='' id='tags'>Tags</a></li>
+
+        {% if user.is_authenticated %}
+        <li><a href='' id='profile'>Your Profile</a></li>
+        <li><a href='' id='logout'>Logout</a></li>
+        {% else %}
+        <li><a href='' id='login'>Log In</a></li>
+        {% endif %}
+
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

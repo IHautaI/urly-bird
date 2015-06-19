@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 
-<html>
+{% extends 'urlyapp/nav.html' %}
+
+{% block content %}
+
 <head>
   <title>Urly-Bird</title>
 </head>
@@ -16,5 +19,5 @@
     <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}' class='bookmark' id='{{bookmark.title}}'>{{bookmark.title}}</a>
     {% endfor %}
   </div>
-</body>
-</html>
+
+{% endblock %}

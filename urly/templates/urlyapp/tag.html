@@ -1,16 +1,23 @@
 <!DOCTYPE html>
-<html>
+
+{% extends 'urlyapp/nav.html' %}
+
+{% block content %}
+
 <head>
-  <title>{{ tag.name }}<title>
+  <title>'{{ tag.name }}'</title>
 </head>
 
 <body>
-<h1 id={{tag.name}}>{{ tag.name }}</h1>
+<h1 id='{{tag.name}}'>{{ tag.name }}</h1>
 
-<div>
-  #bookmarks go here
+<div id='bookmarks'>
+  {% for bookmark in bookmarks %}
+  <div class='col-sm-3'>
+    <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}' class='bookmark' id={{bookmark.title}}>{{ bookmark.title }}</a>
+    Created by: <a herf='{% url 'urlyapp:profile' pk=bookmark.profile.pk %}' class='profile' id='{{ bookmark.profile.username }}'>{{ bookmark.profile.username }}</a>
+  </div>
+  {% endfor %}
 </div>
 
-</body>
-
-</html>
+{% endblock %}

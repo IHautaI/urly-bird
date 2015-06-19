@@ -205,10 +205,12 @@ class TagViewTest(TestCase):
         }
         tag = Tag.objects.create(**inp)
         tag.bookmarks.add(bm)
+        tag.save()
 
         request = HttpRequest()
         response = TagView().get(request, pk=tag.pk)
-        expected = render_to_string('urlyapp/tag.html', {'tag':tag,})
+        expected = render_to_string('urlyapp/tag.html', \
+        {'tag':tag, 'bookmarks':[bm]})
 
         self.assertIn(tag.name, expected)
         self.assertIn(bm.title, expected)

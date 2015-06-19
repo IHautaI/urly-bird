@@ -40,7 +40,7 @@ class TagView(TemplateView):
         context = super().get_context_data()
 
         tag = get_object_or_404(Tag, pk=pk)
-        bookmarks = list(Bookmark.objects.select_related('profile'))
+        bookmarks = list(tag.bookmarks.select_related('profile'))
         context['tag'] = tag
         context['bookmarks'] = bookmarks
 

@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'urlyapp',
+    'bootstrap3',
     #'debug_toolbar',
 )
 
@@ -108,3 +109,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Default settings
+BOOTSTRAP3 = {
+
+    # The URL to the jQuery JavaScript file
+    'jquery_url': '/static/jquery-1.11.3.min.js',
+
+    # The Bootstrap base URL
+    'base_url': '/static/bootstrap/',
+
+    # Include jQuery with Bootstrap JavaScript (affects django-bootstrap3 template tags)
+    'include_jquery': True,
+
+}
