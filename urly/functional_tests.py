@@ -90,7 +90,7 @@ class VisitorTest(unittest.TestCase):
 
         # the user adds a new tag to their first link, 'beastly'
         self.browser.find_element_by_id('add-tag')
-        
+
 
 # the user logs out, is redirected to the main page,
 # and closes the browser.

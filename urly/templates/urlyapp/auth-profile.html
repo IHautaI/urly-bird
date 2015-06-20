@@ -19,7 +19,8 @@
         <a href='{% url 'urlyapp:tag' pk=tag.pk %}' class='tag' id='{{ tag.name }}'>{{ tag.name }}</a>
       </div>
       <div>
-        <form method='post' action='{% url 'urlyapp:edit-bookmark' pk=bookmark.pk %}'>
+        <form method='post' action='{% url 'urlyapp:bookmark-edit' pk=bookmark.pk %}'>
+          {% csrf_token %}
           <button class='edit-tags' id='{{ bookmark.title }}'>Edit tags</button>
         </form>
       </div>
