@@ -2,12 +2,13 @@
 
 {% extends 'urlyapp/nav.html' %}
 
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
 {% block content %}
 
   <h1>Urly-Bird</h1>
-
-  <a href='' id='login_link'>Log In</a>
-  <a href='' id='registration_link'>Register</a>
 
   <div id='trending'>
     Trending links:

@@ -2,10 +2,16 @@
 
 {% extends "urlyapp/nav.html" %}
 
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
 {% block content %}
 
 <form method='post' action=''>
-{% bootstrap_form form %}
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% bootstrap_button 'submit' %}
 </form>
 
 {% endblock %}

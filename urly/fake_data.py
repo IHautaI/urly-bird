@@ -6,7 +6,7 @@ from urlyapp.models import Bookmark, Profile, Tag
 
 
 def fake():
-    tags = ['terrible', 'great', 'smelly', 'sad', 'bright', 'too bright', 'gnarly'\
+    tags = ['terrible', 'great', 'smelly', 'sad', 'bright', 'too bright', 'gnarly',\
             'awesome', 'happy', 'tremendous']
     faker = Faker()
 

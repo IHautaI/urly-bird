@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, DetailView, FormView
+from django.views.generic import TemplateView, DetailView, FormView, UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from urlyapp.models import Bookmark, Profile, Tag
+#from urlyapp.forms import BookmarkEditForm
 
 
 class HomePageView(TemplateView):
@@ -26,14 +27,21 @@ class BookmarkView(TemplateView):
         return render(request, 'urlyapp/bookmark.html', context)
 
 
-class BookmarkEditView(FormView):
+class BookmarkEditView(UpdateView):
+    template_name_suffix = '-edit'
+    model = Bookmark
+    fields = ['title', 'description']
+
+
+class TagsEditView(TemplateView):
 
     def get(self, request, pk):
-        context = super().get_context_data()
+        context = self.get_context_data()
         bookmark = get_object_or_404(Bookmark, pk=pk)
         context['bookmark'] = bookmark
+        context['tags'] = list(bookmark.tag_set.all())
 
-        return render(request, 'urlyapp/bookmark-edit.html', context)
+        return render(request, 'urlyapp/edit-tags.html', context)
 
 
 class ProfileView(TemplateView):

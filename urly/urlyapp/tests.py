@@ -76,31 +76,6 @@ class BookmarkPageTest(TestCase):
         self.assertIn('Francis', response.content.decode())
 
 
-class BookmarkEditTest(TestCase):
-
-    def test_bookmark_edit_resolves(self):
-        inp = {
-            'username': 'Francis',
-            'description': 'hheeeeeeeellooooooo',
-        }
-        profile = Profile.objects.create(**inp)
-
-        inp = {
-            'title': 'test title',
-            'url': 'http://test.url',
-            'description': 'test description',
-            'profile': profile,
-        }
-        bm = Bookmark.objects.create(**inp)
-        request = HttpRequest()
-        response = BookmarkEditView().get(request, pk=bm.pk)
-        expected = render_to_string('urlyapp/bookmark-edit.html', \
-                                    {'bookmark': bm,
-                                     'profile': profile})
-
-        self.assertEqual(expected, response)
-
-
 class ProfileTest(TestCase):
 
     def test_create_profile(self):

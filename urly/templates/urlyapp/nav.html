@@ -26,7 +26,7 @@
       <li><a href='' id='tags'>Tags</a></li>
 
       {% if user.is_authenticated %}
-      <li><a href='' id='profile'>Your Profile</a></li>
+      <li><a href='{% url 'urlyapp:auth-profile' %}' id='profile'>Your Profile</a></li>
       <li><a href='{% url 'accounts:logout' %}' id='logout'>Logout</a></li>
       {% else %}
       <li><a href='{% url 'accounts:login' %}' id='login'>Log In</a></li>

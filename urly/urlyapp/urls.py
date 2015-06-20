@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^tag/(?P<pk>[0-9]+)$', views.TagView.as_view(), name='tag'),
     url(r'^bookmark/edit/(?P<pk>[0-9]+)$', views.BookmarkEditView.as_view(), \
         name='bookmark-edit'),
+    url(r'^bookmark/edit-tags/(?P<pk>[0-9]+)$', views.TagsEditView.as_view(), name='edit-tags'),
 ]

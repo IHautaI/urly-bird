@@ -7,7 +7,7 @@ class Bookmark(models.Model):
     description = models.TextField()
     url = models.URLField()
     profile = models.ForeignKey('Profile', null=True)
-
+    #short = models.URLField(required=True)
 
 class Profile(models.Model):
     username = models.CharField(max_length=255)

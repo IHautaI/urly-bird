@@ -1,31 +1,46 @@
 <!DOCTYPE html>
-
-
 {% extends 'urlyapp/nav.html' %}
+
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 
 {% block content %}
 
   <h1 id='username'>{{ profile.username }}</h1>
 
-  <div id='bookmarks'>
+  <div id='bookmarks' class='container'>
     {% for bookmark in bookmarks %}
-    <div class='col-md-3'>
+    <hr>
+    <div class='container-fluid'>
       <div>
-        <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}'>{{ bookmark.title }}</a>
-        # edit bookmark
+        <div class='col-sm-3'>
+          <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}'>{{ bookmark.title }}</a>
+        </div>
+        <div class='col-sm-3'>
+          <form method='get' action='{% url 'urlyapp:bookmark-edit' pk=bookmark.pk %}'>
+            {% csrf_token %}
+            <button class='edit-bookmark' id='{{ bookmark.title }}'>Edit Bookmark</button>
+          </form>
+        </div>
+
+        <div class ='col-sm-3'>
+          <form method='get' action='{% url 'urlyapp:edit-tags' pk=bookmark.pk %}'>
+            {% csrf_token %}
+            <button class='edit-tags' id='{{bookmark.id}}'>Edit tags</button>
+          </form>
+        </div>
+
       </div>
+    </div>
+
       {% for tag in bookmark.tag_set.all %}
-      <div class='col-sm-3'>
+      <div class='col-sm-2'>
         <a href='{% url 'urlyapp:tag' pk=tag.pk %}' class='tag' id='{{ tag.name }}'>{{ tag.name }}</a>
       </div>
-      <div>
-        <form method='post' action='{% url 'urlyapp:bookmark-edit' pk=bookmark.pk %}'>
-          {% csrf_token %}
-          <button class='edit-tags' id='{{ bookmark.title }}'>Edit tags</button>
-        </form>
-      </div>
+
       {% endfor %}
-    </div>
+
     {% endfor %}
   </div>
   # create bookmark
