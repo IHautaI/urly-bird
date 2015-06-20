@@ -1,7 +1,8 @@
 from faker import Faker
-from urlyapp.models import Bookmark, Profile, Tag
 import random
+from django.contrib.auth.models import User
 
+from urlyapp.models import Bookmark, Profile, Tag
 
 
 def fake():
@@ -28,6 +29,13 @@ def fake():
             item.profile = pf
             item.save()
 
+def users():
+    profs = list(Profile.objects.all().order_by('pk'))
+
+    for idx, prof in enumerate(profs):
+        user = User.objects.create(username=prof.username, password=idx+1)
+        prof.user = user
+        prof.save()
 
 
 def deletem():

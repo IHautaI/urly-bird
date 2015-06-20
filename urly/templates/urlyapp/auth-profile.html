@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+
+{% extends 'urlyapp/nav.html' %}
+
+{% block content %}
+
+  <h1 id='username'>{{ profile.username }}</h1>
+
+  <div id='bookmarks'>
+    {% for bookmark in bookmarks %}
+    <div class='col-md-3'>
+      <div>
+        <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}'>{{ bookmark.title }}</a>
+        # edit bookmark
+      </div>
+      {% for tag in bookmark.tag_set.all %}
+      <div class='col-sm-3'>
+        <a href='{% url 'urlyapp:tag' pk=tag.pk %}' class='tag' id='{{ tag.name }}'>{{ tag.name }}</a>
+      </div>
+      <div>
+        <form method='post' action='{% url 'urlyapp:edit-bookmark' pk=bookmark.pk %}'>
+          <button class='edit-tags' id='{{ bookmark.title }}'>Edit tags</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  # create bookmark
+
+{% endblock %}

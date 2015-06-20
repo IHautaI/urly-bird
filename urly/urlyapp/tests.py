@@ -3,8 +3,9 @@ from django.test import TestCase
 from django.template.loader import render_to_string
 from django.http import HttpRequest
 
-from urlyapp.views import HomePageView, BookmarkView, ProfileView, TagView
-from urlyapp.models import Bookmark, Profile, Tag
+from urlyapp.views import HomePageView, BookmarkView, ProfileView, TagView, BookmarkEditView
+from urlyapp.models import Bookmark, Profile, Tag, User
+
 
 class HomePageTest(TestCase):
 
@@ -13,6 +14,22 @@ class HomePageTest(TestCase):
         response = HomePageView().get(request)
         expected = render_to_string('urlyapp/index.html')
         self.assertEqual(expected, response.content.decode())
+
+
+class BookmarkTest(TestCase):
+
+    def test_create_bookmark(self):
+        inp = {
+            'title': 'test title',
+            'url': 'http://test.url',
+            'description': 'test description'
+        }
+
+        bookmark = Bookmark(**inp)
+
+        self.assertEqual(bookmark.title, 'test title')
+        self.assertEqual(bookmark.url, 'http://test.url')
+        self.assertEqual(bookmark.description, 'test description')
 
 
 class BookmarkPageTest(TestCase):
@@ -58,20 +75,30 @@ class BookmarkPageTest(TestCase):
 
         self.assertIn('Francis', response.content.decode())
 
-class BookmarkTest(TestCase):
 
-    def test_create_bookmark(self):
+class BookmarkEditTest(TestCase):
+
+    def test_bookmark_edit_resolves(self):
+        inp = {
+            'username': 'Francis',
+            'description': 'hheeeeeeeellooooooo',
+        }
+        profile = Profile.objects.create(**inp)
+
         inp = {
             'title': 'test title',
             'url': 'http://test.url',
-            'description': 'test description'
+            'description': 'test description',
+            'profile': profile,
         }
+        bm = Bookmark.objects.create(**inp)
+        request = HttpRequest()
+        response = BookmarkEditView().get(request, pk=bm.pk)
+        expected = render_to_string('urlyapp/bookmark-edit.html', \
+                                    {'bookmark': bm,
+                                     'profile': profile})
 
-        bookmark = Bookmark(**inp)
-
-        self.assertEqual(bookmark.title, 'test title')
-        self.assertEqual(bookmark.url, 'http://test.url')
-        self.assertEqual(bookmark.description, 'test description')
+        self.assertEqual(expected, response)
 
 
 class ProfileTest(TestCase):

@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.keys import Keys
 import unittest
 
 
@@ -61,14 +62,36 @@ class VisitorTest(unittest.TestCase):
         self.browser.find_element_by_id('login').click()
 
         # they are prompted to enter a username and password, or register for an account
-        un = self.browser.find_element_by_id('username')
-        pw = self.browser.find_element_by_id('password')
+        un = self.browser.find_element_by_id('id_username')
+        pw = self.browser.find_element_by_id('id_password')
 
-# they see their own page, similar to the user page before
-# but with options to create new links, delete links, and
-# edit the tags on a link.
+        # they enter their username and password
+        username = 'Miss Gabriella Abbott'
+        un.send_keys(username)
+        pw.send_keys('1')
 
-# the user adds a new tag to their first link, 'beastly'
+        # and submit
+        self.browser.find_element_by_id('submit').click()
+
+        # they see their own page, similar to the user page before
+        h_1 = self.browser.find_element_by_tag_name('h1')
+        self.assertEqual(h_1.text, username)
+
+        # but with options to create new links, delete links, and
+        # edit the tags on a link.
+        ed_tag = self.browser.find_element_by_class_name('edit-tags')
+
+        # the user decides to edit the tags for a link
+        ed_tag.click()
+
+        # they see the bookmark they're editing
+        h_1 = self.browser.find_element_by_tag_name('h1')
+        self.assertEqual(username, h_1.text)
+
+        # the user adds a new tag to their first link, 'beastly'
+        self.browser.find_element_by_id('add-tag')
+        
+
 # the user logs out, is redirected to the main page,
 # and closes the browser.
 if __name__ == '__main__':

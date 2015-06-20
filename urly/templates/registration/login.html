@@ -28,10 +28,8 @@
 </tr>
 </table>
 
-<input type="submit" value="login" />
-{% if user.is_authenticated %}
-<input type="hidden" name="next" value='' />
-{% endif %}
+<input type="submit" value="login" id='submit' />
+<input type="hidden" name="next" value='{% url 'urlyapp:auth-profile' %}' />
 </form>
 
 {# Assumes you setup the password_reset view in your URLconf #}
