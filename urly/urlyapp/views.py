@@ -96,7 +96,7 @@ class BookmarkTrendingView(ListView):
     model = Bookmark
     template_name = 'urlyapp/bookmark-trending.html'
     paginate_by = 16
-    queryset = sorted(Bookmark.objects.all(), key=lambda x: x.recent_clicks, reverse=True)
+    queryset = sorted(Bookmark.objects.all(), key=lambda x: x.recent_clicks(), reverse=True)
 
 
 

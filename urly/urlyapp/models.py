@@ -9,8 +9,8 @@ class Bookmark(models.Model):
     url = models.URLField()
     profile = models.ForeignKey('Profile', null=True)
     short = models.URLField(null=True)
+    #timestamp = models.DateTimeField()
 
-    @property
     def recent_clicks(self):
         time = datetime.datetime.utcnow() + datetime.timedelta(days=-30)
         return self.click_set.filter(timestamp__gt=time).count()
