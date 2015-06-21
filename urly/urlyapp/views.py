@@ -95,7 +95,7 @@ class BookmarkCreateView(TemplateView):
 class BookmarkTrendingView(ListView):
     model = Bookmark
     template_name = 'urlyapp/bookmark-trending.html'
-    paginate_by = 8
+    paginate_by = 16
     queryset = sorted(Bookmark.objects.all(), key=lambda x: x.recent_clicks, reverse=True)
 
 
@@ -151,12 +151,33 @@ class AuthProfileView(TemplateView):
 
 class TagView(TemplateView):
 
-    def get(self, request, pk):
-        context = super().get_context_data()
 
+    def get(self, request, pk):
+        page = request.GET.get('page')
         tag = get_object_or_404(Tag, pk=pk)
-        bookmarks = list(tag.bookmarks.select_related('profile'))
-        context['tag'] = tag
+        context = self.get_context_data(tag)
+        queryset = tag.bookmarks.select_related('profile')
+
+        pager = Paginator(queryset, 8)
+        try:
+            bookmarks = pager.page(page)
+        except PageNotAnInteger:
+            bookmarks = pager.page(1)
+        except EmptyPage:
+            bookmarks = pager.page(pager.num_pages)
+
         context['bookmarks'] = bookmarks
 
         return render(request, 'urlyapp/tag.html', context)
+
+    def get_context_data(self, tag):
+        context = super().get_context_data()
+        context['tag'] = tag
+        return context
+
+
+class AllTagsView(ListView):
+    model = Tag
+    template_name = 'urlyapp/all-tags.html'
+    paginate_by = 20
+    queryset = Tag.objects.all()

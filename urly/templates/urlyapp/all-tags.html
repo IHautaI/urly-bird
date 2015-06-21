@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+{% extends 'urlyapp/nav.html' %}
+
+{% load bootstrap3 %}
+
+{% block content %}
+
+<h1>Tags</h1>
+
+<div class='container-fluid'>
+  {% for tag in object_list %}
+  <div class='col-sm-3'>
+    <a href='{% url 'urlyapp:tag' pk=tag.pk %}'>{{ tag.name }}</a>
+  </div>
+  {% endfor %}
+</div>
+{% bootstrap_pagination page_obj %}
+
+
+{% endblock %}
