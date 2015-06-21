@@ -1,6 +1,7 @@
 from faker import Faker
 import random
 from django.contrib.auth.models import User
+import datetime
 
 from urlyapp.models import Bookmark, Profile, Tag
 
@@ -27,6 +28,19 @@ def fake():
         pf = Profile.objects.create(username=faker.name(), description=faker.text())
         for item in bm:
             item.profile = pf
+            item.save()
+
+    pfs = list(Profile.objects.all())
+
+    bms = list(Bookmark.objects.all())
+
+    for item in bms:
+        num = random.randint(1,20)
+        for idx in range(num):
+            pf = random.choice(pfs)
+            timestamp = faker.date_time_this_month().replace(tzinfo=datetime.timezone(offset=datetime.timedelta()))
+            item.click_set.create(profile=pf, timestamp=timestamp)
+
             item.save()
 
 def users():

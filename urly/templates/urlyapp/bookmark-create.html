@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+{% extends "urlyapp/nav.html" %}
+
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block content %}
+
+<h4>{{error}}</h4>
+
+<form method='post' action=''>
+  {% csrf_token %}
+  {% bootstrap_form bookmark_form %}
+  {% bootstrap_button 'Create' %}
+</form>
+
+{% endblock %}

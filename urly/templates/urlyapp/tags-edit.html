@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends 'urlyapp/nav.html' %}
+
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% block content %}
+<h1>{{ bookmark.title }}</h1>
+<h3>Current Tags: </h3>
+<div>
+  {% for tag in applied_tags %}
+    <div id='{{ tag.name }}' class='container'>
+      <div class='col-sm-2'
+        <a href='' >{{ tag.name }}</a>
+      </div>
+      <div class='col-sm-1'>
+        <form method='post' action='{% url 'urlyapp:tags-edit' pk=bookmark.pk %}?remove={{tag.pk}}'>
+          {% csrf_token %}
+          <button value='submit'><span class="glyphicon glyphicon-remove"></span></button>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<h3>Add a Tag:</h3>
+</div>
+{% for tag in tags %}
+  <div id='{{ tag.name }}' class='container'>
+    <div class='col-sm-2'
+      <a href='' >{{ tag.name }}</a>
+    </div>
+    <div class='col-sm-1'>
+      <form method='post' action='{% url 'urlyapp:tags-edit' pk=bookmark.pk %}?remove={{tag.pk}}'>
+        {% csrf_token %}
+        <button value='submit'><span class="glyphicon glyphicon-ok"></span></button>
+      </form>
+    </div>
+  </div>
+{% endfor %}
+</div id='new tag'>
+  <form method='post' action=' url 'urlyapp:new-tag' pk=bookmark.pk '>
+     bootstrap_form form
+     # haven't made form yet
+  </form>
+<div>
+
+
+</div>
+
+{% endblock %}

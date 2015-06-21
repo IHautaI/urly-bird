@@ -66,7 +66,7 @@ class VisitorTest(unittest.TestCase):
         pw = self.browser.find_element_by_id('id_password')
 
         # they enter their username and password
-        username = 'Miss Gabriella Abbott'
+        username = 'Alexis Lind'
         un.send_keys(username)
         pw.send_keys('1')
 

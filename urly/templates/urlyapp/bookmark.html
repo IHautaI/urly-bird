@@ -1,9 +1,10 @@
-<!DOCTYPE html>
-
-
 {% extends 'urlyapp/nav.html' %}
 
+{% load staticfiles %}
+
 {% block content %}
+
+<script src="/static/Chart.min.js"></script>
 
   <h1>{{ bookmark.title }}</h1>
 
@@ -14,4 +15,34 @@
                      class='profile'>{{ profile.username }}</a>
   </div>
 
+  <div>
+    <canvas id="myChart" width="500" height="400"></canvas>
+  </div>
+  <script>
+
+    var data = {
+        labels: {{ data_labels }},
+        datasets: [
+            {
+                label: "Total clicks to date",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(22,220,22,1)",
+                pointColor: "rgba(22,22,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: {{ data }}
+            }
+        ]
+    };
+    {
+      beziercurve:true
+    };
+
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var myNewChart = new Chart(ctx).Line(data);
+
+
+
+</script>
 {% endblock %}

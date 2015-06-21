@@ -1,10 +1,27 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import TemplateView, DetailView, FormView, UpdateView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView, ListView, UpdateView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.forms import model_to_dict
+from hashids import Hashids
+import datetime
+import pandas as pd
+import numpy as np
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from urlyapp.models import Bookmark, Profile, Tag
-#from urlyapp.forms import BookmarkEditForm
+
+from urlyapp.models import Bookmark, Profile, Tag, Click
+from urlyapp.forms import BookmarkCreateForm
+
+
+def Hashid(request, hashid):
+    inp = {
+        'bookmark': get_object_or_404(Bookmark, short=hashid),
+        'timestamp': datetime.datetime.now(),
+    }
+    clk = Click.objects.create(**inp)
+
+    return redirect(inp['bookmark'].url)
 
 
 class HomePageView(TemplateView):
@@ -18,12 +35,22 @@ class HomePageView(TemplateView):
 class BookmarkView(TemplateView):
 
     def get(self, request, pk):
+
         context = self.get_context_data()
         bm = get_object_or_404(Bookmark, pk=pk)
         pf = bm.profile
         context['bookmark'] = bm
         context['profile'] = pf
 
+        clicks = bm.click_set.all()
+        clicks = pd.DataFrame(model_to_dict(click) for click in clicks)
+        clicks['count'] = 1
+        clicks = clicks.set_index('timestamp')
+        counts = clicks['count']
+        counts = counts.sort_index()
+        series = pd.expanding_count(counts).resample('D', how=np.max, fill_method='pad')
+        context['data'] = list(series)
+        context['data_labels'] = list(range(len(context['data'])))
         return render(request, 'urlyapp/bookmark.html', context)
 
 
@@ -33,15 +60,52 @@ class BookmarkEditView(UpdateView):
     fields = ['title', 'description']
 
 
+class BookmarkCreateView(TemplateView):
+
+    @method_decorator(login_required)
+    def get(self, request, error=None):
+        context = self.get_context_data()
+        bookmark_form = BookmarkCreateForm()
+        context['bookmark_form'] = bookmark_form
+
+        if error:
+            context['error'] = error
+
+        return render(request, 'urlyapp/bookmark-create.html', context)
+
+    @method_decorator(login_required)
+    def post(self, request):
+        form = BookmarkCreateForm(request.POST)
+        if form.is_valid():
+            bm = form.save(commit=False)
+
+            hashids = Hashids(salt = 'Moddey Dhoo')
+            bm.profile = request.user.profile
+            bm.save()
+
+            bm.short = hashids.encode(bm.pk, bm.user.profile.pk)
+
+
+            return redirect('urlyapp:auth-profile')
+
+        context = self.get_context_data()
+        return self.get(request, error='Invalid form data entered. Try again')
+
+
 class TagsEditView(TemplateView):
 
     def get(self, request, pk):
         context = self.get_context_data()
         bookmark = get_object_or_404(Bookmark, pk=pk)
         context['bookmark'] = bookmark
-        context['tags'] = list(bookmark.tag_set.all())
 
-        return render(request, 'urlyapp/edit-tags.html', context)
+        applied_tags = bookmark.tag_set.all()
+        ids = applied_tags.values('pk')
+
+        context['applied_tags'] = list(applied_tags)
+        context['tags'] = list(Tag.objects.exclude(id__in=ids))
+
+        return render(request, 'urlyapp/tags-edit.html', context)
 
 
 class ProfileView(TemplateView):
@@ -54,16 +118,25 @@ class ProfileView(TemplateView):
         return render(request, 'urlyapp/profile.html', context)
 
 
-class AuthProfileView(TemplateView):
+class AuthProfileView(ListView):
 
     @method_decorator(login_required)
     def get(self, request):
+        page = request.GET.get('page')
         pk = request.user.profile.pk
-
-        context = self.get_context_data()
         profile = get_object_or_404(Profile, pk=pk)
+        context = {}
         context['profile'] = profile
-        context['bookmarks'] = list(profile.bookmark_set.all())
+        bms = list(profile.bookmark_set.all())
+        pager = Paginator(bms, 8)
+        try:
+            bookmarks = pager.page(page)
+        except PageNotAnInteger:
+            bookmarks = pager.page(1)
+        except EmptyPage:
+            bookmarks = pager.page(pager.num_pages)
+
+        context['bookmarks'] = bookmarks
 
         return render(request, 'urlyapp/auth-profile.html', context)
 
