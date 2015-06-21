@@ -4,7 +4,7 @@ from django.contrib import admin
 from . import views
 
 urlpatterns = [
-    url(r'^s/(?P<hashid>\w+)', views.Hashid, name='hashid'),
+    url(r'^s/(?P<hashid>\w+)$', views.Hashid, name='hashid'),
     url(r'^$', views.HomePageView.as_view(), name='home'),
     url(r'^bookmark/(?P<pk>[0-9]+)$', views.BookmarkView.as_view(), \
         name='bookmark'),
@@ -16,4 +16,5 @@ urlpatterns = [
         name='bookmark-edit'),
     url(r'^bookmark/tags/edit/(?P<pk>[0-9]+)$', views.TagsEditView.as_view(), name='tags-edit'),
     url(r'^bookmark/create/$', views.BookmarkCreateView.as_view(), name='bookmark-create'),
+    url(r'^bookmarks/trending/$', views.BookmarkTrendingView.as_view(), name='bookmark-trending'),
 ]

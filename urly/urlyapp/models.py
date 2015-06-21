@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 
 class Bookmark(models.Model):
@@ -8,6 +9,11 @@ class Bookmark(models.Model):
     url = models.URLField()
     profile = models.ForeignKey('Profile', null=True)
     short = models.URLField(null=True)
+
+    @property
+    def recent_clicks(self):
+        time = datetime.datetime.utcnow() + datetime.timedelta(days=-30)
+        return self.click_set.filter(timestamp__gt=time).count()
 
 
 class Profile(models.Model):

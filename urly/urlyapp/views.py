@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, UpdateView, CreateView
+from django.views.generic import TemplateView, UpdateView, CreateView, ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.forms import model_to_dict
+from django.db.models import Count
 from hashids import Hashids
 import datetime
 import pandas as pd
@@ -17,7 +18,7 @@ from urlyapp.forms import BookmarkCreateForm
 def Hashid(request, hashid):
     inp = {
         'bookmark': get_object_or_404(Bookmark, short=hashid),
-        'timestamp': datetime.datetime.now(),
+        'timestamp': datetime.datetime.utcnow(),
     }
     clk = Click.objects.create(**inp)
 
@@ -85,11 +86,18 @@ class BookmarkCreateView(TemplateView):
 
             bm.short = hashids.encode(bm.pk, bm.user.profile.pk)
 
-
             return redirect('urlyapp:auth-profile')
 
         context = self.get_context_data()
         return self.get(request, error='Invalid form data entered. Try again')
+
+
+class BookmarkTrendingView(ListView):
+    model = Bookmark
+    template_name = 'urlyapp/bookmark-trending.html'
+    paginate_by = 8
+    queryset = sorted(Bookmark.objects.all(), key=lambda x: x.recent_clicks, reverse=True)
+
 
 
 class TagsEditView(TemplateView):

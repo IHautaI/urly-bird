@@ -23,7 +23,7 @@
 
       <li><a href='{% url 'urlyapp:home' %}' id='home'>Home</a></li>
       <li><a href='' id='profiles'>Profiles</a></li>
-      <li><a href='' id='bookmarks'>Trending Bookmarks</a></li>
+      <li><a href='{% url 'urlyapp:bookmark-trending' %}' id='bookmarks'>Trending Bookmarks</a></li>
       <li><a href='' id='tags'>Tags</a></li>
 
       {% if user.is_authenticated %}
