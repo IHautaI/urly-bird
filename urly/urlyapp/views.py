@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, ListView, UpdateView, CreateView
+from django.views.generic import TemplateView, UpdateView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.forms import model_to_dict
@@ -118,14 +118,14 @@ class ProfileView(TemplateView):
         return render(request, 'urlyapp/profile.html', context)
 
 
-class AuthProfileView(ListView):
+class AuthProfileView(TemplateView):
 
     @method_decorator(login_required)
     def get(self, request):
         page = request.GET.get('page')
         pk = request.user.profile.pk
         profile = get_object_or_404(Profile, pk=pk)
-        context = {}
+        context = self.get_context_data()
         context['profile'] = profile
         bms = list(profile.bookmark_set.all())
         pager = Paginator(bms, 8)

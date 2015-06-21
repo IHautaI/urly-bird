@@ -25,7 +25,7 @@
   <div id='bookmarks' class='container'>
     {% for bookmark in bookmarks %}
     <hr>
-    <div class='container-fluid'>
+    <div class='container'>
       <div>
         <div class='col-sm-3'>
           <a href='{% url 'urlyapp:hashid' hashid=bookmark.short %}'>{{ bookmark.title }}</a>
@@ -53,8 +53,8 @@
       <div class='col-sm-2'>
         <a href='{% url 'urlyapp:tag' pk=tag.pk %}' class='tag' id='{{ tag.name }}'>{{ tag.name }}</a>
       </div>
-
-      {% endfor %}
+      
+    {% endfor %}
 
     {% endfor %}
     {% bootstrap_pagination bookmarks %}

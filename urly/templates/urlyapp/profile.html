@@ -9,19 +9,22 @@
 
   <h1 id='username'>{{ profile.username }}</h1>
 
-  <div id='bookmarks'>
-    {% for bookmark in bookmarks %}
-    <div class='col-md-3'>
-      <div>
-        <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}'>{{ bookmark.title }}</a>
-      </div>
-      {% for tag in bookmark.tag_set.all %}
-      <div class='col-sm-3'>
-        <a href='{% url 'urlyapp:tag' pk=tag.pk %}' class='tag' id='{{tag.name}}'>{{ tag.name }}</a>
-      </div>
-      {% endfor %}
-    </div>
-    {% endfor %}
-  </div>
+  <div id='bookmarks' class='container'>
 
+    {% for bookmark in bookmarks %}
+    <hr>
+    <div class='container'
+      <div class='col-md-3'>
+        <div>
+          <a href='{% url 'urlyapp:bookmark' pk=bookmark.pk %}'>{{ bookmark.title }}</a>
+        </div>
+        {% for tag in bookmark.tag_set.all %}
+        <div class='col-sm-2'>
+          <a href='{% url 'urlyapp:tag' pk=tag.pk %}' class='tag' id='{{tag.name}}'>{{ tag.name }}</a>
+        </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    </div>
+  </div>
 {% endblock %}
