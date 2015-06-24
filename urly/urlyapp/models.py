@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 
+class BookmarkManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('click_set', 'tag_set')
+
 
 class Bookmark(models.Model):
     title = models.CharField(max_length=255)
@@ -10,10 +14,12 @@ class Bookmark(models.Model):
     profile = models.ForeignKey('Profile', null=True)
     short = models.URLField(null=True)
     timestamp = models.DateTimeField(null=True)
+    objects = BookmarkManager()
 
     def recent_clicks(self):
         time = datetime.datetime.utcnow() + datetime.timedelta(days=-30)
         return self.click_set.filter(timestamp__gt=time).count()
+
 
 
 class Profile(models.Model):
