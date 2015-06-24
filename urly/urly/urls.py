@@ -25,7 +25,7 @@ router.register(r'bookmarks', views.BookmarkViewSet)
 router.register(r'click', views.ClickViewSet)
 router.register(r'tag', views.TagViewSet)
 router.register(r'profile', views.ProfileViewSet)
-router.register(r'edit-tags', views.BookmarkEditTags, base_name = 'Bookmark-Tags')
+router.register(r'edit-tags', views.BookmarkEditTags, base_name = 'edit-tags')
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),

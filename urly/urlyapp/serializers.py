@@ -31,13 +31,13 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
     tag_set = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='tag-detail')
     click_set = serializers.HyperlinkedRelatedField(many=True, read_only=True, \
                                                     view_name='click-detail')
-    #edit_tags = serializers.HyperlinkedRelatedField( read_only=True, view_name='edit-tags')
+    edit_tags = serializers.HyperlinkedIdentityField( read_only=True, view_name='edit-tags-detail')
     clicks = serializers.IntegerField(source='click_set.count', read_only=True)
 
     class Meta:
         model = Bookmark
         fields = ('url', 'profile', 'timestamp', 'title', 'description', \
-                  '_url', 'short', 'tag_set', 'click_set', 'clicks')#, 'edit_tags' )
+                  '_url', 'short', 'tag_set', 'click_set', 'clicks', 'edit_tags' )
 
     def create(self, validated_data):
         hashid = Hashids(salt='Moddey Dhoo')
