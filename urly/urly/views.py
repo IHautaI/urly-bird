@@ -6,8 +6,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 
 from urlyapp.models import Bookmark, Click, Tag, Profile
-from urlyapp.serializers import BookmarkSerializer, ClickSerializer, TagSerializer, ProfileSerializer
-from urlyapp.permissions import IsOwnerOrReadOnly, IsOwnedOrReadOnly
+from urlyapp.serializers import BookmarkSerializer, ClickSerializer, TagSerializer, ProfileSerializer, MakeClickSerializer
+from urlyapp.permissions import IsOwnerOrReadOnly, IsOwnedOrReadOnly, IsProfileOrReadOnly
 import datetime
 
 
@@ -26,47 +26,15 @@ class BookmarkViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('title', 'profile__username', )
 
+    allowed_methods = ['GET', 'POST', 'PATCH', 'DELETE'] # only for
+                                                         # individual item?
+
     def perform_create(self, serializer):
         inp = {
             'timestamp':datetime.datetime.utcnow(),
             'profile': self.request.user.profile,
         }
         serializer.save(**inp)
-
-
-    # def update(self, request, pk):
-    #         pass
-
-# class BookmarkEditTags(viewsets.ViewSet):
-#
-#     def retrieve(self, request, pk):
-#         bookmark = get_object_or_404(Bookmark, pk=pk)
-#         serializer = TagSerializer(bookmark.tag_set.all(), many=True)
-#         return Response(serializer.data)
-#
-#     def update(self, request, pk):
-#         bookmark = get_object_or_404(Bookmark, pk=pk)
-#         serializer = TagSerializer(request.data)
-#         if serializer.is_valid():
-#             if Tag.objects.filter(name=serializer.name):
-#                 bookmark.tag_set.add(Tag.objects.get(name=serializer.name))
-#             else:
-#                 serializer.save()
-#                 bookmark.tag_set.add(Tag.objects.get(name=serializer.name))
-#
-#             return Response(serializer.data)
-#
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-#
-#     def delete(self, request, pk):
-#         bookmark = get_object_or_404(Bookmark, pk=pk)
-#         serializer = TagSerializer(request.data)
-#         if serializer.is_valid():
-#             if bookmark.tag_set.filter(name=serializer.name).exists():
-#                 bookmark.tag_set.remove()
-#                 return Response(status=status.HTTP_204_NO_CONTENT)
-#
-#         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class ClickViewSet(viewsets.ReadOnlyModelViewSet):
@@ -77,12 +45,21 @@ class ClickViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class BMClickViewSet(viewsets.ViewSet):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnedOrReadOnly,)
+    allowed_methods = ['GET', 'POST']
 
     def retrieve(self, request, pk):
         bookmark = get_object_or_404(Bookmark, pk=pk)
-        serializer = ClickSerializer(bookmark.click_set.all(), many=True)
+        serializer = MakeClickSerializer(bookmark.click_set.all(), many=True)
         pagination_class = StandardResultsSetPagination
         return Response(serializer.data)
+
+    def perform_create(self, request, pk):
+        bookmark = get_object_or_404(Bookmark, pk=pk)
+        serializer = MakeClickSerializer(request.data)
+        if serializer.is_valid():
+            bookmark.click_set.add(serializer.save())
+        return Response(serialzer.data)
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -94,4 +71,4 @@ class TagViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsProfileOrReadOnly,)

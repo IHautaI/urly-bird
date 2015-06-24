@@ -14,13 +14,21 @@ class TagSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ClickSerializer(serializers.HyperlinkedModelSerializer):
-    bookmark = serializers.PrimaryKeyRelatedField(read_only=True)
-    profile = serializers.PrimaryKeyRelatedField(read_only=True)
+    bookmark = serializers.HyperlinkedRelatedField(read_only=True, view_name='bookmark-detail')
+    profile = serializers.HyperlinkedRelatedField(read_only=True, view_name='profile-detail')
     timestamp = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Click
         fields = ('bookmark', 'profile', 'timestamp')
+
+class MakeClickSerializer(serializers.ModelSerializer):
+    profile = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all())
+    timestamp = serializers.DateTimeField()
+
+    class Meta:
+        model = Click
+        fields = ('profile', 'timestamp')
 
 
 class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
@@ -72,4 +80,4 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('username', 'description', 'bookmark_set',)
+        fields = ('url', 'username', 'description', 'bookmark_set',)
