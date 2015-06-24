@@ -28,14 +28,16 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
     timestamp = serializers.DateTimeField(read_only=True)
     _url = serializers.URLField()
     short = serializers.CharField(read_only=True)
-    tag_set = TagSerializer(many=True, read_only=True)
+    tag_set = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='tag-detail')
     click_set = serializers.HyperlinkedRelatedField(many=True, read_only=True, \
                                                     view_name='click-detail')
+    #edit_tags = serializers.HyperlinkedRelatedField( read_only=True, view_name='edit-tags')
+    clicks = serializers.IntegerField(source='click_set.count', read_only=True)
 
     class Meta:
         model = Bookmark
         fields = ('url', 'profile', 'timestamp', 'title', 'description', \
-                  '_url', 'short', 'tag_set', 'click_set' )
+                  '_url', 'short', 'tag_set', 'click_set', 'clicks')#, 'edit_tags' )
 
     def create(self, validated_data):
         hashid = Hashids(salt='Moddey Dhoo')

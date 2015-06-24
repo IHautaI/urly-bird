@@ -30,7 +30,7 @@ class BookmarkEditTags(viewsets.ViewSet):
         serializer = TagSerializer(bookmark.tag_set.all(), many=True)
         return Response(serializer.data)
 
-    def create(self, request, pk):
+    def update(self, request, pk):
         bookmark = get_object_or_404(Bookmark, pk=pk)
         serializer = TagSerializer(request.data)
         if serializer.is_valid():
