@@ -46,7 +46,6 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
         return bookmark
 
     def update(self, bookmark, validated_data):
-        # bookmark = Bookmark.objects.get(pk=pk)
         options = ['title', 'description']
         for item in options:
             if validated_data.get(item):
@@ -54,7 +53,7 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
 
         if validated_data.get('tag_set'):
             tag_set = validated_data['tag_set']
-
+            bookmark.tag_set.all().delete()
             for item in tag_set:
                 if Tag.objects.filter(name=item['name']).exists():
                     bookmark.tag_set.add(Tag.objects.get(name=item['name']))
@@ -63,6 +62,7 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
 
         bookmark.save()
         return bookmark
+
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     username = serializers.CharField(read_only=True)
