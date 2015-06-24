@@ -22,7 +22,7 @@ def Hashid(request, hashid):
     }
     clk = Click.objects.create(**inp)
 
-    return redirect(inp['bookmark'].url)
+    return redirect(inp['bookmark']._url)
 
 
 class HomePageView(TemplateView):
@@ -49,9 +49,11 @@ class BookmarkView(TemplateView):
         clicks = clicks.set_index('timestamp')
         counts = clicks['count']
         counts = counts.sort_index()
-        series = pd.expanding_count(counts).resample('D', how=np.max, fill_method='pad')
+        series = pd.expanding_count(counts).resample('D', how=np.max, \
+                                                     fill_method='pad')
         context['data'] = list(series)
         context['data_labels'] = list(range(len(context['data'])))
+
         return render(request, 'urlyapp/bookmark.html', context)
 
 
@@ -96,8 +98,11 @@ class BookmarkTrendingView(ListView):
     model = Bookmark
     template_name = 'urlyapp/bookmark-trending.html'
     paginate_by = 16
-    queryset = sorted(Bookmark.objects.all(), key=lambda x: x.recent_clicks(), reverse=True)
 
+    def get_queryset(self):
+        return Bookmark.objects.filter('click__timestamp__gte=time').annotate(count=Count('click')).order_by('-count')
+    # Bookmark.objects.filter('click__timestamp__gte=time').annotate(count=Count('click')).order_by('-count')
+    # or sorted(Bookmark.objects.all(), key=lambda x: x.recent_clicks(), reverse=True)
 
 
 class TagsEditView(TemplateView):

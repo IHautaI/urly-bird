@@ -17,11 +17,23 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
+from rest_framework import routers
+from . import views
+
+router = routers.DefaultRouter()
+router.register(r'bookmarks', views.BookmarkViewSet)
+router.register(r'click', views.ClickViewSet)
+router.register(r'tag', views.TagViewSet)
+router.register(r'profile', views.ProfileViewSet)
+
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^urly/', include('urlyapp.urls', namespace='urlyapp')),
     url(r'/accounts/login/%', auth_views.login),
     url(r'^accounts/', include('django.contrib.auth.urls',\
         namespace='accounts')),
+
+    url(r'^api/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^', include(router.urls)),
 
 ]

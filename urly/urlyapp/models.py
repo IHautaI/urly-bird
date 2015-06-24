@@ -6,10 +6,10 @@ import datetime
 class Bookmark(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    url = models.URLField()
+    _url = models.URLField()
     profile = models.ForeignKey('Profile', null=True)
     short = models.URLField(null=True)
-    #timestamp = models.DateTimeField()
+    timestamp = models.DateTimeField(null=True)
 
     def recent_clicks(self):
         time = datetime.datetime.utcnow() + datetime.timedelta(days=-30)
