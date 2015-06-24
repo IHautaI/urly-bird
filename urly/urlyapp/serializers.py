@@ -46,9 +46,10 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
     username = serializers.CharField(read_only=True)
+    description = serializers.CharField()
     bookmark_set = serializers.HyperlinkedRelatedField(many=True, read_only=True, \
                                                     view_name='bookmark-detail')
 
     class Meta:
         model = Profile
-        fields = ('username', 'bookmark_set',)
+        fields = ('username', 'description', 'bookmark_set',)
