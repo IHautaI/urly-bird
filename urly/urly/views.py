@@ -6,8 +6,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 
 from urlyapp.models import Bookmark, Click, Tag, Profile
-from urlyapp.serializers import BookmarkSerializer, ClickSerializer, TagSerializer, ProfileSerializer, MakeClickSerializer
-from urlyapp.permissions import IsOwnerOrReadOnly, IsOwnedOrReadOnly, IsProfileOrReadOnly
+from urlyapp.serializers import BookmarkSerializer, ClickSerializer, \
+                                TagSerializer, ProfileSerializer, \
+                                MakeClickSerializer
+from urlyapp.permissions import IsOwnerOrReadOnly, IsOwnedOrReadOnly, \
+                                IsProfileOrReadOnly
 import datetime
 
 
@@ -40,12 +43,14 @@ class BookmarkViewSet(viewsets.ModelViewSet):
 class ClickViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Click.objects.all()
     serializer_class = ClickSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, \
+                          IsOwnedOrReadOnly,)
     pagination_class = StandardResultsSetPagination
 
 
 class BMClickViewSet(viewsets.ViewSet):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, \
+                          IsOwnedOrReadOnly,)
     allowed_methods = ['GET', 'POST']
 
     def retrieve(self, request, pk):
@@ -71,4 +76,14 @@ class TagViewSet(viewsets.ModelViewSet):
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsProfileOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, \
+                          IsProfileOrReadOnly,)
+
+    allowed_methods = ['GET', 'POST', 'PUT', 'PATCH', 'UPDATE', 'DELETE']
+
+    def perform_create(self, request):
+        if not request.user.is_authenticated():
+            return super().perform_create(request)
+        else:
+            return Response('Cannot create user while logged in', \
+                            status_code=status.HTTP_400_BAD_REQUEST)

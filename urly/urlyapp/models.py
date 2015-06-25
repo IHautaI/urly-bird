@@ -21,6 +21,9 @@ class Bookmark(models.Model):
         return self.click_set.filter(timestamp__gt=time).count()
 
 
+class ProfileManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('bookmark_set')
 
 class Profile(models.Model):
     username = models.CharField(max_length=255)

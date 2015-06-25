@@ -71,13 +71,57 @@ class BookmarkSerializer(serializers.HyperlinkedModelSerializer):
         bookmark.save()
         return bookmark
 
-
-class ProfileSerializer(serializers.HyperlinkedModelSerializer):
-    username = serializers.CharField(read_only=True)
-    description = serializers.CharField()
-    bookmark_set = serializers.HyperlinkedRelatedField(many=True, read_only=True, \
-                                                    view_name='bookmark-detail')
+class ShortBookmarkSerializer(serializers.HyperlinkedModelSerializer):
+    timestamp = serializers.DateTimeField(read_only=True)
+    _url = serializers.URLField()
+    short = serializers.CharField(read_only=True)
+    tag_set = TagSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Profile
-        fields = ('url', 'username', 'description', 'bookmark_set',)
+        model = Bookmark
+        fields = ('url', 'timestamp', 'title', 'description', \
+                  '_url', 'short', 'tag_set')
+
+
+class ProfileSerializer(serializers.Serializer):
+    url = serializers.HyperlinkedIdentityField(read_only=True, \
+                                               view_name='profile-detail')
+    username = serializers.CharField(read_only=True)
+    description = serializers.CharField()
+    bookmark_set = ShortBookmarkSerializer(many=True, read_only=True)
+
+    class Meta:
+        fields = ('url', 'username', 'description', 'bookmark_set', \
+                  'user_password')
+        write_only_fields = ('user_password',)
+
+    def create(self, validated_data):
+        user = User.objects.create(username=validated_data['username'], \
+                                   password=validated_data['user_password'])
+
+        user.profile.create(username=user.username, \
+                            description=validated_data.get('description'))
+
+        return user.profile
+
+    def update(self, validated_data):
+        profile = Profile.objects.get(validated_data['pk'])
+        description = validated_data.get('description')
+        bookmarks = validated_data.get('bookmark_set')
+
+        if description:
+            profile.description = description
+
+        if bookmarks:
+            for item in bookmarks:
+                if not Bookmark.objects.filter(url=item['url']).exists():
+                    serializer = BookmarkSerializer(item)
+                    if serializer.is_valid():
+                        profile.bookmark_set.add(serializer.save())
+
+            urls = [item['url'] for item in bookmarks]
+            for item in profile.bookmark_set.all():
+                if item.url not in urls:
+                    profile.bookmark_set.delete(item)
+
+        return profile

@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'urlyapp',
     'bootstrap3',
-    'debug_toolbar',
+    #'debug_toolbar',
     'rest_framework',
 )
 
