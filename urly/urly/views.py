@@ -79,6 +79,9 @@ class ProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, \
                           IsProfileOrReadOnly,)
 
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('username',)
+
     allowed_methods = ['GET', 'POST', 'PUT', 'PATCH', 'UPDATE', 'DELETE']
 
     def perform_create(self, request):

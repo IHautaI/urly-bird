@@ -30,6 +30,7 @@ class Profile(models.Model):
     description = models.TextField()
     user = models.OneToOneField(User, null=True)
 
+    objects = ProfileManager()
 
 class Tag(models.Model):
     name = models.CharField(max_length=15)
